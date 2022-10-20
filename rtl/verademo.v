@@ -1,5 +1,5 @@
 
-module mycore
+module verademo
 (
 	input         clk,
 	input         reset,
