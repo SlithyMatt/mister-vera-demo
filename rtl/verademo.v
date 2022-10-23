@@ -14,7 +14,7 @@ module verademo
 	output reg    VBlank,
 	output reg    VSync,
 
-	output  [7:0] video
+	output  [23:0] video
 );
 
 reg   [9:0] hc;
@@ -78,10 +78,78 @@ always @(posedge clk) begin
 	if (hc == 590) HSync <= 0;
 end
 
-reg  [7:0] cos_out;
-wire [5:0] cos_g = cos_out[7:3]+6'd32;
-cos cos(vvc + {vc>>scandouble, 2'b00}, cos_out);
+//reg  [7:0] cos_out;
+//wire [5:0] cos_g = cos_out[7:3]+6'd32;
+//cos cos(vvc + {vc>>scandouble, 2'b00}, cos_out);
 
-assign video = (cos_g >= rnd_c) ? {cos_g - rnd_c, 2'b00} : 8'd0;
+//assign video = (cos_g >= rnd_c) ? {cos_g - rnd_c, 2'b00} : 8'd0;
+
+always @(posedge clk) begin
+	if(pal) begin
+		if(vc < (scandouble ? 400 : 200)) begin // vertical bars
+			case (hc)
+				0:	  video <= 24'hB4B4B4; // 75% white
+				76:  video <= 24'hB4B410; // 75% yellow
+				151: video <= 24'h10B4B4; // 75% cyan
+				227: video <= 24'h10B410; // 75% green
+				303: video <= 24'hB410B4; // 75% magenta
+				379: video <= 24'hB41010; // 75% red
+				454: video <= 24'h1010B4; // 75% blue
+			endcase
+		end
+		else if (vc < (scandouble ? 467 : 233)) begin // castellations
+			case (hc)
+				0:	  video <= 24'h1010B4; // 75% blue
+				76:  video <= 24'h101010; // 75% black
+				151: video <= 24'hB410B4; // 75% magenta
+				227: video <= 24'h101010; // 75% black
+				303: video <= 24'h10B4B4; // 75% cyan
+				379: video <= 24'h101010; // 75% black
+				454: video <= 24'hB4B4B4; // 75% white
+			endcase
+		end
+		else begin // squares
+			case (hc)
+				0:	  video <= 24'h10466A; // -I
+				88:  video <= 24'hEBEBEB; // 100% white
+				177: video <= 24'h481076; // +Q
+				265: video <= 24'h101010; // 75% black
+			endcase
+		end
+	end
+	else begin // NTSC
+		if(vc < (scandouble ? 320 : 160)) begin // vertical bars
+			case (hc)
+				0:	  video <= 24'hB4B4B4; // 75% white
+				76:  video <= 24'hB4B410; // 75% yellow
+				151: video <= 24'h10B4B4; // 75% cyan
+				227: video <= 24'h10B410; // 75% green
+				303: video <= 24'hB410B4; // 75% magenta
+				379: video <= 24'hB41010; // 75% red
+				454: video <= 24'h1010B4; // 75% blue
+			endcase
+		end
+		else if (vc < (scandouble ? 373 : 187)) begin // castellations
+			case (hc)
+				0:	  video <= 24'h1010B4; // 75% blue
+				76:  video <= 24'h101010; // 75% black
+				151: video <= 24'hB410B4; // 75% magenta
+				227: video <= 24'h101010; // 75% black
+				303: video <= 24'h10B4B4; // 75% cyan
+				379: video <= 24'h101010; // 75% black
+				454: video <= 24'hB4B4B4; // 75% white
+			endcase
+		end
+		else begin // squares
+			case (hc)
+				0:	  video <= 24'h10466A; // -I
+				88:  video <= 24'hEBEBEB; // 100% white
+				177: video <= 24'h481076; // +Q
+				265: video <= 24'h101010; // 75% black
+			endcase
+		end
+	end 
+
+end
 
 endmodule
