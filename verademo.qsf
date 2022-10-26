@@ -24,7 +24,7 @@ set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS OFF
+set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS OFF
 set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF
 set_global_assignment -name FINAL_PLACEMENT_OPTIMIZATION ALWAYS
 set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
@@ -70,4 +70,32 @@ set_global_assignment -name SEED 1
 source sys/sys.tcl
 source sys/sys_analog.tcl
 source files.qip
+set_global_assignment -name VERILOG_FILE rtl/vera/generated/sprite_ram/rtl/sprite_ram_bb.v
+set_global_assignment -name VERILOG_FILE rtl/vera/generated/palette_ram/rtl/palette_ram_bb.v
+set_global_assignment -name VERILOG_FILE rtl/vera/video/video_composite.v
+set_global_assignment -name VERILOG_FILE rtl/vera/video/video_modulator.v
+set_global_assignment -name VERILOG_FILE rtl/vera/video/video_modulator_coslut.v
+set_global_assignment -name VERILOG_FILE rtl/vera/video/video_modulator_sinlut.v
+set_global_assignment -name VERILOG_FILE rtl/vera/video/video_vga.v
+set_global_assignment -name VERILOG_FILE rtl/vera/spi/spictrl.v
+set_global_assignment -name VERILOG_FILE rtl/vera/graphics/composer.v
+set_global_assignment -name VERILOG_FILE rtl/vera/graphics/layer_line_buffer.v
+set_global_assignment -name VERILOG_FILE rtl/vera/graphics/layer_renderer.v
+set_global_assignment -name VERILOG_FILE rtl/vera/graphics/sprite_line_buffer.v
+set_global_assignment -name VERILOG_FILE rtl/vera/graphics/sprite_renderer.v
+set_global_assignment -name VERILOG_FILE rtl/vera/vram_if.v
+set_global_assignment -name VERILOG_FILE rtl/vera/reset_sync.v
+set_global_assignment -name VERILOG_FILE rtl/vera/main_ram.v
+set_global_assignment -name VERILOG_FILE rtl/vera/dpram.v
+set_global_assignment -name VERILOG_FILE rtl/vera/vera.v
+set_global_assignment -name VERILOG_FILE rtl/vera/audio/audio.v
+set_global_assignment -name VERILOG_FILE rtl/vera/audio/audio_fifo.v
+set_global_assignment -name VERILOG_FILE rtl/vera/audio/dacif.v
+set_global_assignment -name VERILOG_FILE rtl/vera/audio/pcm.v
+set_global_assignment -name VERILOG_FILE rtl/vera/audio/psg.v
+set_global_assignment -name CDF_FILE jtag.cdf
+set_global_assignment -name QIP_FILE sys/sys.qip
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/verademo.v
+set_global_assignment -name SDC_FILE verademo.sdc
+set_global_assignment -name SYSTEMVERILOG_FILE verademo.sv
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
