@@ -248,7 +248,6 @@ wire reset = RESET | status[0] | buttons[1];
 
 //////////////////////////////////////////////////////////////////
 
-wire [1:0] col = status[4:3];
 
 wire HBlank;
 wire HSync;

@@ -13,7 +13,7 @@ module verademo
 	output reg    VBlank,
 	output reg    VSync,
 
-	output  [23:0] video
+	output [23:0] video
 );
 
 // External bus interface
@@ -66,20 +66,39 @@ vera vera(
 
 assign video = {vga_r, vga_r, vga_g, vga_g, vga_b, vga_b};
 
+reg [7:0] data_wr_r = 0;
+
+assign extbus_d = extbus_wr_n ? data_wr_r : 8'bZ;
+
 always @(posedge clk) begin
-	if(scandouble) ce_pix <= 1;
-		else ce_pix <= ~ce_pix;
+	if(scandouble) ce_pix = 1;
+		else ce_pix = ~ce_pix;
 
 	if (reset) begin
-		extbus_cs_n <= 0;
-		extbus_rd_n <= 0;
-		extbus_wr_n <= 0;
-		extbus_a <= 5'b00000;
-		extbus_d <= 8'h00;
-		spi_miso <= 0;
+		extbus_cs_n = 1;
+		extbus_rd_n = 0;
+		extbus_wr_n = 1;
+		extbus_a = 5'b00000;
+		data_wr_r = vera_regs[0];
+		spi_miso = 0;
+	end else if (!reg_init_done) begin
+		extbus_a = extbus_a + 1;
+		data_wr_r = vera_regs[extbus_a];
+		if (extbus_a == 31) begin
+			extbus_cs_n = 0;
+			extbus_wr_n = 0;
+			reg_init_done = 1;
+		end
 	end
 end
 
+reg [7:0] vera_regs[0:31];
+
+initial begin
+    $readmemh("vera_regs.mem", vera_regs, 0);
+end
+
+reg reg_init_done;
 
 
 endmodule
