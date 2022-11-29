@@ -70,24 +70,31 @@ reg [7:0] data_wr_r = 0;
 
 assign extbus_d = extbus_wr_n ? data_wr_r : 8'bZ;
 
+reg [3:0] init_ctr;
+
 always @(posedge clk) begin
 	if(scandouble) ce_pix = 1;
 		else ce_pix = ~ce_pix;
 
 	if (reset) begin
-		extbus_cs_n = 1;
+		extbus_cs_n = 0;
 		extbus_rd_n = 0;
-		extbus_wr_n = 1;
+		extbus_wr_n = 0;
 		extbus_a = 5'b00000;
 		data_wr_r = vera_regs[0];
 		spi_miso = 0;
+		init_ctr = 0;
 	end else if (!reg_init_done) begin
-		extbus_a = extbus_a + 1;
-		data_wr_r = vera_regs[extbus_a];
-		if (extbus_a == 31) begin
+		init_ctr = init_ctr + 1;
+		if (&init_ctr) begin
+			extbus_a = extbus_a + 1;
+			data_wr_r = vera_regs[extbus_a];
+			extbus_cs_n = 1;
+			extbus_wr_n = 1;
+			if (extbus_a == 31) reg_init_done = 1;
+		end else begin
 			extbus_cs_n = 0;
-			extbus_wr_n = 0;
-			reg_init_done = 1;
+			extbus_wr_n = 0;				
 		end
 	end
 end
